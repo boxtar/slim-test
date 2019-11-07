@@ -1,0 +1,164 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+<div class="container px-2 mx-auto">
+    <div class="my-4 p-4 bg-white shadow rounded">
+        <form action="{{ url_for('properties.store') }}" method="post" enctype="multipart/form-data">
+            <!-- CSRF here -->
+
+            <div class="flex flex-wrap">
+
+                <!-- County -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">County</span>
+                    <input required type="text" name="county"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+
+                <!-- Country -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Country</span>
+                    <input required type="text" name="country"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+
+                <!-- Town -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Town</span>
+                    <input required type="text" name="town"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+
+                <!-- Postcode -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Postcode</span>
+                    <input required type="text" name="postcode"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+
+                <!-- Displayable Address -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Displayable
+                        Address</span>
+                    <input required type="text" name="address"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+
+                <!-- No. of Bedrooms -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Number of
+                        Bedrooms</span>
+                    <div class="relative">
+                        <select name="num_bedrooms"
+                            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            <option>0</option>
+                            <option selected>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- No. of Bathrooms -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Number of
+                        Bathrooms</span>
+                    <div class="relative">
+                        <select name="num_bathrooms"
+                            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            <option>0</option>
+                            <option selected>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Type -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Property
+                        Type</span>
+                    <div class="relative">
+                        <select name="property_type"
+                            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            <option>Flat</option>
+                            <option>Semi-Detached</option>
+                            <option>Detached</option>
+                            <option>Bungalow</option>
+                            <option>Cottage</option>
+                            <option>Etc..</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Price</span>
+                    <input required type="text" name="price"
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+
+                <!-- Type (Sale or Rent) -->
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">For Sale /
+                        Rent</span>
+                    <div class="">
+                        <input required type="radio" name="type" value="sale" id="sale" class="">
+                        <label for="sale" class="ml-2">Sale</label>
+                    </div>
+                    <div class="">
+                        <input required type="radio" name="type" value="rent" id="rent" class="">
+                        <label for="rent" class="ml-2">Rent</label>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="p-4 w-full">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Description</span>
+                    <textarea name="description" rows="5" required
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"></textarea>
+                </div>
+
+                <!-- Image -->
+                <div class="p-4 w-full">
+                    <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Image</span>
+                    <input required type="file" name="image" class="mt-2 w-full focus:outline-none hover:shadow-outline focus:shadow-outline">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="p-4 w-full">
+                    <input type="submit" value="Submit Property"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

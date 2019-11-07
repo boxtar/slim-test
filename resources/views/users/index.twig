@@ -1,0 +1,26 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+<div class="container px-2 mx-auto">
+    <div class="mt-4 flex items-center">
+        <h1 class="text-2xl text-gray-700">All Users</h1>
+        <a href="{{ url_for('users.create') }}" class="ml-3 px-3 py-1 bg-blue-200 rounded-full text-xs uppercase hover:shadow-outline">new</a>
+    </div>
+
+    <div class="-mb-3 -mr-3 mt-4 flex flex-wrap">
+        {% for user in users %}
+        <div class="w-full sm:w-1/2 pr-3 pb-3">
+            <a href="{{ url_for('users.show', {'username': user.username |lower}) }}">
+                <div class="p-4 bg-white shadow rounded hover:shadow-outline">
+                    <p class="flex items-center text-xl text-gray-700">
+                        {{ user.name | title }}
+                        <span class="ml-2 text-sm text-gray-500">({{ user.username }})</span>
+                    </p>
+                    <p class="text-sm text-gray-500">{{ user.email }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

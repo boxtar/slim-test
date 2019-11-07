@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <title>{% block title %}Slim Shady{% endblock title %}</title>
+
+    <!-- Font override -->
+    <style>
+        html {
+            font-family: Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <nav class="w-full bg-white border-b">
+        <div class="container px-2 mx-auto">
+            <ul class="flex justify-end py-5 font-thin text-gray-800">
+                <li>
+                    <a href="{{ url_for('index') }}"
+                        class="{{ is_current_url('index') ? 'font-semibold' : '' }}">Home</a>
+                </li>
+                <li class="ml-4">
+                    <a href="{{ url_for('properties.index') }}"
+                        class="{{ is_current_url('properties.index') ? 'font-semibold' : '' }}">Properties</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="main">
+        {% block content %}{% endblock content %}
+    </div>
+    {% block scripts %}{% endblock scripts %}
+</body>
+
+</html>

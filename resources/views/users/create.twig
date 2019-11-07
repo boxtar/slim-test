@@ -1,0 +1,29 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+<div class="container mx-auto">
+    <div class="mt-4 p-4 bg-white shadow rounded">
+        <form action="{{ url_for('users.store') }}" method="post">
+            <!-- Need CSRF -->
+            <!-- Need Method Spoofing -->
+            <div class="flex flex-wrap">
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="text-xs uppercase text-gray-500">Name</span>
+                    <input type="text" name="name" class="w-full border-b border-blue-300 focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="text-xs uppercase text-gray-500">Email</span>
+                    <input type="text" name="email" class="w-full border-b border-blue-300 focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="p-4 w-full sm:w-1/2">
+                    <span class="text-xs uppercase text-gray-500">Username</span>
+                    <input type="text" name="username" class="w-full border-b border-blue-300 focus:outline-none focus:border-blue-500">
+                </div>
+            </div>
+            <div class="p-4 w-full sm:w-1/2">
+                <input type="submit" value="Create" class="px-5 py-2 bg-blue-200 rounded-full text-blue-600 hover:shadow-outline">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
