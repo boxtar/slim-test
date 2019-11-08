@@ -32,6 +32,10 @@ return function (App $app) {
         // Show
         $group->get('/{id}', PropertiesController::class . ':show')
             ->setName('properties.show');
+
+        // Delete
+        $group->delete('/{id}', PropertiesController::class . ':delete')
+            ->setName('properties.delete');
     });
 
     // Contact the API
@@ -103,6 +107,5 @@ return function (App $app) {
 
         // This is just lazy. I should be redirecting somewhere with a flashed message.
         return $this->get('view')->render($response, 'properties/refreshed.twig');
-        
     })->setName('properties.refresh-from-api');
 };

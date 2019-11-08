@@ -49,20 +49,25 @@ class PropertiesController
         $itemsPerPage = 30;
 
         // Grab all properties and chunk for pagination
-        $properties = array_chunk(Property::orderBy('id', 'desc')->get()->toArray(), $itemsPerPage);
+        $properties = Property::orderBy('id', 'desc')->get()->toArray();
+        $totalPropertiesCount = count($properties);
+        $properties = array_chunk($properties, $itemsPerPage);
+
+        $noOfPages = count($properties);
 
         // Constrain page
         if ($page < 1) $page = 1;
-        else if ($page > count($properties)) $page = count($properties);
+        else if ($page > $noOfPages) $page = $noOfPages;
 
         // Render view with required data
         return $this->view->render($response, 'properties/index.twig', [
-            'properties' => $properties[$page - 1],
+            'properties' => $noOfPages > 0 ? $properties[$page - 1] : [],
+            'property_count' => $totalPropertiesCount,
             'current_page' => $page,
             'previous_page' => $page > 1 ? $page - 1 : null,
-            'next_page' => $page < count($properties) ? $page + 1 : null,
+            'next_page' => $page < $noOfPages ? $page + 1 : null,
             'first_page' => 1,
-            'last_page' => count($properties),
+            'last_page' => $noOfPages,
             'items_per_page' => $itemsPerPage
         ]);
     }
@@ -102,6 +107,15 @@ class PropertiesController
         Property::create(
             array_merge($input, ['image_full' => $imageName])
         );
+
+        // Respond/Redirect (TODO: flash success message)
+        return $response
+            ->withHeader('Location', '/properties');
+    }
+
+    public function delete(Request $request, Response $response, $args)
+    {
+        Property::findOrFail($args['id'])->delete();
 
         // Respond/Redirect (TODO: flash success message)
         return $response

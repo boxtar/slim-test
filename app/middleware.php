@@ -1,6 +1,7 @@
 <?php
 
 use Slim\App;
+use Slim\Middleware\MethodOverrideMiddleware;
 
 return function (App $app) {
     // Twig setup
@@ -26,4 +27,6 @@ return function (App $app) {
             false
         )
     );
+
+    $app->add(new MethodOverrideMiddleware);
 };

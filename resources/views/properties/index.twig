@@ -60,7 +60,7 @@ Property List
 
     <!-- Header Area -->
     <div class="mt-8 flex items-center">
-        <h1 class="text-2xl text-gray-700">Property List</h1>
+        <h1 class="text-2xl text-gray-700">Showing {{ items_per_page }} of {{ property_count }} Properties</h1>
 
         <a href="{{ url_for('properties.create') }}"
             class="ml-3 px-3 py-1 bg-blue-200 rounded-full text-xs uppercase hover:shadow-outline">Add Property</a>

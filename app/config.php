@@ -12,10 +12,10 @@ return function (ContainerBuilder $containerBuilder) {
             'displayErrorDetails' => true,
 
             // Base url to app
-            'app_url' => "https://slim4-codecourse.dev",
+            'app_url' => "https://slim4-test.dev",
 
             // Base url to public storage (requires symlink similar to Laravel)
-            'public_storage' => "https://slim4-codecourse.dev/storage/app/public",
+            'public_storage' => "https://slim4-test.dev/storage/app/public",
 
             // OS path to actual public storage dir
             'uploads_dir' => __DIR__ . '/../storage/app/public',

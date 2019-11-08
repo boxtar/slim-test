@@ -6,10 +6,7 @@
 
 {% block content %}
 <div class="container px-2 mx-auto">
-
     <div class="mt-4 p-4 bg-white shadow rounded">
-
-
         <div class="sm:flex ">
             <!-- Image -->
             {% if property.image_full %}
@@ -27,8 +24,12 @@
             </div>
         </div>
 
-        <div>
-            
+        {# Delete Form #}
+        <div class="mt-4">
+            <form action="{{ url_for('properties.delete', {'id': property.id}) }}" method="post">
+                <input type="hidden" name="_METHOD" value="DELETE" />
+                <input type="submit" value="Delete Property" class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"/>
+            </form>
         </div>
 
     </div>
