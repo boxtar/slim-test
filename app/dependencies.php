@@ -43,7 +43,7 @@ return function (ContainerBuilder $containerBuilder) {
         PropertiesController::class => function(ContainerInterface $container) {
             return new PropertiesController(
                 $container->get('view'),
-                $container
+                $container->get('settings')['storage']
             );
         }
     ]);

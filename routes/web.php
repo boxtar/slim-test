@@ -39,6 +39,9 @@ return function (App $app) {
     });
 
     // Contact the API
+    // TODO: Implement error handling
+    // TODO: Refactor
+    // TODO: Look into asyc Guzzle requests
     $app->get('/get-data', function (Request $request, Response $response) {
 
         // This will hold all the property data from API

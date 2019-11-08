@@ -13,7 +13,7 @@ use Slim\Factory\AppFactory;
 $containerBuilder = new ContainerBuilder();
 
 // User config
-(require __DIR__ . '/../app/config.php')($containerBuilder);
+$containerBuilder->addDefinitions(__DIR__ . '/../config/app.php');
 
 // User dependencies
 (require __DIR__ . '/../app/dependencies.php')($containerBuilder);

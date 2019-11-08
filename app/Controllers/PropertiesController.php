@@ -7,6 +7,7 @@ use App\Models\Property;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
 
 class PropertiesController
 {
@@ -26,11 +27,11 @@ class PropertiesController
      * possible as I've added \Slim\Views\Twig::class into
      * container in dependencies.php
      */
-    public function __construct(Twig $view, $container)
+    public function __construct(Twig $view, $storageConfig)
     {
         $this->view = $view;
-        $this->storagePath = $container->get('settings')['uploads_dir'];
-        $this->storageUrl =  $container->get('settings')['public_storage'];
+        $this->storagePath = $storageConfig['uploads_dir'];
+        $this->storageUrl =  $storageConfig['public_storage'];
     }
 
     /**
@@ -53,6 +54,7 @@ class PropertiesController
         $totalPropertiesCount = count($properties);
         $properties = array_chunk($properties, $itemsPerPage);
 
+        // Total number of pages
         $noOfPages = count($properties);
 
         // Constrain page
@@ -77,9 +79,12 @@ class PropertiesController
      */
     public function show(Request $request, Response $response, $args)
     {
-        return $this->view->render($response, 'properties/show.twig', [
-            'property' => Property::findOrFail($args['id'])
-        ]);
+        // Find and throw if not found
+        if (!$property = Property::find($args['id'])) {
+            throw new HttpNotFoundException($request, "Property {$args['id']} Not Found");
+        }
+
+        return $this->view->render($response, 'properties/show.twig', compact('property'));
     }
 
     /**
@@ -104,22 +109,27 @@ class PropertiesController
         $imageName = $this->storageUrl . '/' . $this->processImage($request);
 
         // Persist
-        Property::create(
+        $property = Property::create(
             array_merge($input, ['image_full' => $imageName])
         );
 
+        $router = $request->getAttribute('routeParser');
+
         // Respond/Redirect (TODO: flash success message)
         return $response
-            ->withHeader('Location', '/properties');
+            ->withHeader('Location', $router->urlFor('properties.show', ['id' => $property->id]));
     }
 
     public function delete(Request $request, Response $response, $args)
     {
+        // Authorise
+
+        // Delete
         Property::findOrFail($args['id'])->delete();
 
-        // Respond/Redirect (TODO: flash success message)
+        // Redirect with message (TODO: flash success message)
         return $response
-            ->withHeader('Location', '/properties');
+            ->withHeader('Location', $request->getAttribute('routeParser')->urlFor('properties.index'));
     }
 
     protected function validate($input)

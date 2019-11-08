@@ -20,15 +20,37 @@
                     <span class="text-sm text-gray-500">(&pound;{{ property.price }})</span>
                 </p>
                 <p class="text-gray-700">{{ property.address }}</p>
-                <p class="text-sm text-gray-500">For {{ property.type |title }}</p>
+                <p class="text-sm text-gray-500 tracking-wide uppercase">For {{ property.type |title }}</p>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <div class="flex flex-wrap items-center ">
+                <span class="w-5 text-right text-gray-700 text-xl ">{{ property.num_bedrooms }}</span>
+                <span
+                    class="ml-2 text-gray-600 text-xs tracking-wide uppercase">Bedroom{{ property.num_bedrooms > 1 ? 's' : '' }}</span>
+            </div>
+            <div class="flex flex-wrap items-center ">
+                <span class="w-5 text-right text-gray-700 text-xl ">{{ property.num_bathrooms }}</span>
+                <span
+                    class="ml-2 text-gray-600 text-xs tracking-wide uppercase">Bathroom{{ property.num_bathrooms > 1 ? 's' : '' }}</span>
+            </div>
+            <div class="mt-4">
+                <p class="text-gray-600 text-xs tracking-wide uppercase">Description:</p>
+                <p class="mt-1 text-gray-700">{{ property.description }}</p>
+            </div>
+
+            <div class="mt-4">
+                <p class="text-gray-600 text-xs tracking-wide uppercase">Other stuff here...</p>
             </div>
         </div>
 
         {# Delete Form #}
-        <div class="mt-4">
+        <div class="mt-8 text-right">
             <form action="{{ url_for('properties.delete', {'id': property.id}) }}" method="post">
                 <input type="hidden" name="_METHOD" value="DELETE" />
-                <input type="submit" value="Delete Property" class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"/>
+                <input type="submit" value="Delete Property"
+                    class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" />
             </form>
         </div>
 
