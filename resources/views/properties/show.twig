@@ -16,11 +16,11 @@
 
             <div class="ml-4">
                 <p class="flex flex-wrap items-center text-xl text-gray-700">
-                    <span class="mr-2">{{ property.town }}</span>
-                    <span class="text-sm text-gray-500">(&pound;{{ property.price }})</span>
+                    <span class="mr-2">{{ property.property_type }} in {{ property.town }}</span>
+                    <span class="text-sm text-gray-500">(For {{ property.type |title }})</span>
                 </p>
                 <p class="text-gray-700">{{ property.address }}</p>
-                <p class="text-sm text-gray-500 tracking-wide uppercase">For {{ property.type |title }}</p>
+                <p class="text-sm text-gray-500 tracking-wide uppercase">&pound;{{ property.price }}</p>
             </div>
         </div>
 
@@ -46,14 +46,25 @@
         </div>
 
         {# Delete Form #}
-        <div class="mt-8 text-right">
-            <form action="{{ url_for('properties.delete', {'id': property.id}) }}" method="post">
+        <div class="mt-8 flex justify-end">
+            <a href="{{ url_for('properties.edit', { 'id': property.id }) }}"
+                class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Edit Property</a>
+
+            <form action="{{ url_for('properties.delete', {'id': property.id}) }}" method="post"
+                onsubmit="return confirmDelete()">
                 <input type="hidden" name="_METHOD" value="DELETE" />
                 <input type="submit" value="Delete Property"
-                    class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" />
+                    class="ml-2 bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" />
             </form>
         </div>
 
     </div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+<script>
+    const confirmDelete = () => confirm("Are you really, really sure?");
+</script>
+{% endblock scripts %}

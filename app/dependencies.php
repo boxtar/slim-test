@@ -19,9 +19,7 @@ return function (ContainerBuilder $containerBuilder) {
     ]);
 
     /**
-     * Configure Eloquent and add to container.
-     * As this is a builder function we need to actually retrieve
-     * the container entry to boot this up (done in bootstrap/app.php)
+     * Get DB setup and added to container
      */
     $containerBuilder->addDefinitions([
         'db' => function (ContainerInterface $container) {
@@ -38,11 +36,20 @@ return function (ContainerBuilder $containerBuilder) {
         }
     ]);
 
-    // CANNOT believe I actually have to do this...
+    // Session flashing
+    $containerBuilder->addDefinitions([
+        'flash' => function(ContainerInterface $container) {
+            return new \Slim\Flash\Messages();
+        }
+    ]);
+
+    // Container can autowire Twig ('view'), but not storage config
+    // so I'm manually passing that in as a dependency.
     $containerBuilder->addDefinitions([
         PropertiesController::class => function(ContainerInterface $container) {
             return new PropertiesController(
                 $container->get('view'),
+                $container->get('flash'),
                 $container->get('settings')['storage']
             );
         }

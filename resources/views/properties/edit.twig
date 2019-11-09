@@ -1,7 +1,6 @@
 {% extends "layouts/app.twig" %}
-
 {% block title %}
-Add a new property
+Edit mode, engaged!
 {% endblock title %}
 
 {% block content %}
@@ -14,15 +13,18 @@ Add a new property
         </div>
         {% endif %}
 
-        <form action="{{ url_for('properties.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ url_for('properties.update', { 'id' : property.id }) }}" method="post"
+            enctype="multipart/form-data">
             <!-- CSRF here -->
+
+            <input type="hidden" name="_METHOD" value="PATCH" />
 
             <div class="flex flex-wrap">
 
                 <!-- County -->
                 <div class="p-4 w-full sm:w-1/2">
                     <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">County</span>
-                    <input type="text" name="county" value="{{ old.county ?? '' }}"
+                    <input type="text" name="county" value="{{ property.county ?? '' }}"
                         class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white {{ errors ? errors.county ? 'border-red-400' : '' : '' }}">
                     {% if errors is defined and errors.county is defined %}
                     <p class="text-red-500 text-xs italic">{{ errors.county[0] }}</p>
@@ -32,7 +34,7 @@ Add a new property
                 <!-- Country -->
                 <div class="p-4 w-full sm:w-1/2">
                     <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Country</span>
-                    <input type="text" name="country" value="{{ old.country ?? '' }}"
+                    <input type="text" name="country" value="{{ property.country ?? '' }}"
                         class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white {{ errors ? errors.country ? 'border-red-400' : '' : '' }}">
                     {% if errors is defined and errors.country is defined %}
                     <p class="text-red-500 text-xs italic">{{ errors.country[0] }}</p>
@@ -42,7 +44,7 @@ Add a new property
                 <!-- Town -->
                 <div class="p-4 w-full sm:w-1/2">
                     <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Town</span>
-                    <input type="text" name="town" value="{{ old.town ?? '' }}"
+                    <input type="text" name="town" value="{{ property.town ?? '' }}"
                         class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white {{ errors ? errors.town ? 'border-red-400' : '' : '' }}">
                     {% if errors is defined and errors.town is defined %}
                     <p class="text-red-500 text-xs italic">{{ errors.town[0] }}</p>
@@ -52,7 +54,7 @@ Add a new property
                 <!-- Postcode -->
                 <div class="p-4 w-full sm:w-1/2">
                     <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Postcode</span>
-                    <input type="text" name="postcode" value="{{ old.postcode ?? '' }}"
+                    <input type="text" name="postcode" value="{{ property.postcode ?? '' }}"
                         class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
                 </div>
 
@@ -60,7 +62,7 @@ Add a new property
                 <div class="p-4 w-full sm:w-1/2">
                     <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Displayable
                         Address</span>
-                    <input type="text" name="address" value="{{ old.address ?? '' }}"
+                    <input type="text" name="address" value="{{ property.address ?? '' }}"
                         class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white {{ errors ? errors.address ? 'border-red-400' : '' : '' }}">
                     {% if errors is defined and errors.address is defined %}
                     <p class="text-red-500 text-xs italic">{{ errors.address[0] }}</p>
@@ -70,7 +72,7 @@ Add a new property
                 <!-- Price -->
                 <div class="p-4 w-full sm:w-1/2">
                     <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Price</span>
-                    <input type="text" name="price" value="{{ old.price ?? 0 }}"
+                    <input type="text" name="price" value="{{ property.price ?? 0 }}"
                         class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white {{ errors ? errors.price ? 'border-red-400' : '' : '' }}">
                     {% if errors is defined and errors.price is defined %}
                     <p class="text-red-500 text-xs italic">{{ errors.price[0] }}</p>
@@ -84,17 +86,17 @@ Add a new property
                     <div class="relative">
                         <select name="num_bedrooms"
                             class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                            <option {{ old.num_bedrooms == 0 ? 'selected' : '' }}>0</option>
-                            <option {{ old.num_bedrooms is not defined ? 'selected' : old.num_bedrooms == 1 ? 'selected' : '' }}>1</option>
-                            <option {{ old.num_bedrooms == 2 ? 'selected' : '' }}>2</option>
-                            <option {{ old.num_bedrooms == 3 ? 'selected' : '' }}>3</option>
-                            <option {{ old.num_bedrooms == 4 ? 'selected' : '' }}>4</option>
-                            <option {{ old.num_bedrooms == 5 ? 'selected' : '' }}>5</option>
-                            <option {{ old.num_bedrooms == 6 ? 'selected' : '' }}>6</option>
-                            <option {{ old.num_bedrooms == 7 ? 'selected' : '' }}>7</option>
-                            <option {{ old.num_bedrooms == 8 ? 'selected' : '' }}>8</option>
-                            <option {{ old.num_bedrooms == 9 ? 'selected' : '' }}>9</option>
-                            <option {{ old.num_bedrooms == 10 ? 'selected' : '' }}>10</option>
+                            <option {{ property.num_bedrooms == 0 ? 'selected' : '' }}>0</option>
+                            <option {{ property.num_bedrooms == 1 ? 'selected' : '' }}>1</option>
+                            <option {{ property.num_bedrooms == 2 ? 'selected' : '' }}>2</option>
+                            <option {{ property.num_bedrooms == 3 ? 'selected' : '' }}>3</option>
+                            <option {{ property.num_bedrooms == 4 ? 'selected' : '' }}>4</option>
+                            <option {{ property.num_bedrooms == 5 ? 'selected' : '' }}>5</option>
+                            <option {{ property.num_bedrooms == 6 ? 'selected' : '' }}>6</option>
+                            <option {{ property.num_bedrooms == 7 ? 'selected' : '' }}>7</option>
+                            <option {{ property.num_bedrooms == 8 ? 'selected' : '' }}>8</option>
+                            <option {{ property.num_bedrooms == 9 ? 'selected' : '' }}>9</option>
+                            <option {{ property.num_bedrooms == 10 ? 'selected' : '' }}>10</option>
                         </select>
                         <div
                             class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -112,17 +114,17 @@ Add a new property
                     <div class="relative">
                         <select name="num_bathrooms"
                             class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                            <option {{ old.num_bathrooms == 0 ? 'selected' : '' }}>0</option>
-                            <option {{ old.num_bathrooms is not defined ? 'selected' : old.num_bathrooms == 1 ? 'selected' : '' }}>1</option>
-                            <option {{ old.num_bathrooms == 2 ? 'selected' : '' }}>2</option>
-                            <option {{ old.num_bathrooms == 3 ? 'selected' : '' }}>3</option>
-                            <option {{ old.num_bathrooms == 4 ? 'selected' : '' }}>4</option>
-                            <option {{ old.num_bathrooms == 5 ? 'selected' : '' }}>5</option>
-                            <option {{ old.num_bathrooms == 6 ? 'selected' : '' }}>6</option>
-                            <option {{ old.num_bathrooms == 7 ? 'selected' : '' }}>7</option>
-                            <option {{ old.num_bathrooms == 8 ? 'selected' : '' }}>8</option>
-                            <option {{ old.num_bathrooms == 9 ? 'selected' : '' }}>9</option>
-                            <option {{ old.num_bathrooms == 10 ? 'selected' : '' }}>10</option>
+                            <option {{ property.num_bathrooms == 0 ? 'selected' : '' }}>0</option>
+                            <option {{ property.num_bathrooms == 1 ? 'selected' : '' }}>1</option>
+                            <option {{ property.num_bathrooms == 2 ? 'selected' : '' }}>2</option>
+                            <option {{ property.num_bathrooms == 3 ? 'selected' : '' }}>3</option>
+                            <option {{ property.num_bathrooms == 4 ? 'selected' : '' }}>4</option>
+                            <option {{ property.num_bathrooms == 5 ? 'selected' : '' }}>5</option>
+                            <option {{ property.num_bathrooms == 6 ? 'selected' : '' }}>6</option>
+                            <option {{ property.num_bathrooms == 7 ? 'selected' : '' }}>7</option>
+                            <option {{ property.num_bathrooms == 8 ? 'selected' : '' }}>8</option>
+                            <option {{ property.num_bathrooms == 9 ? 'selected' : '' }}>9</option>
+                            <option {{ property.num_bathrooms == 10 ? 'selected' : '' }}>10</option>
                         </select>
                         <div
                             class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -140,14 +142,14 @@ Add a new property
                     <div class="relative">
                         <select name="property_type"
                             class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                            <option {{ old.property_type == 'End of Terrace' ? 'selected' : '' }}>End of Terrace</option>
-                            <option {{ old.property_type == 'Flat' ? 'selected' : '' }}>Flat
+                            <option {{ property.property_type == 'End of Terrace' ? 'selected' : '' }}>End of Terrace</option>
+                            <option {{ property.property_type == 'Flat' ? 'selected' : '' }}>Flat
                             </option>
-                            <option {{ old.property_type == 'Terraced' ? 'selected' : '' }}>Terraced</option>
-                            <option {{ old.property_type == 'Bungalow' ? 'selected' : '' }}>Bungalow</option>
-                            <option {{ old.property_type == 'Cottage' ? 'selected' : '' }}>Cottage</option>
-                            <option {{ old.property_type == 'Semi-detached' ? 'selected' : '' }}>Semi-detached</option>
-                            <option {{ old.property_type == 'Detatched' ? 'selected' : '' }}>Detatched</option>
+                            <option {{ property.property_type == 'Terraced' ? 'selected' : '' }}>Terraced</option>
+                            <option {{ property.property_type == 'Bungalow' ? 'selected' : '' }}>Bungalow</option>
+                            <option {{ property.property_type == 'Cottage' ? 'selected' : '' }}>Cottage</option>
+                            <option {{ property.property_type == 'Semi-detached' ? 'selected' : '' }}>Semi-detached</option>
+                            <option {{ property.property_type == 'Detatched' ? 'selected' : '' }}>Detatched</option>
                         </select>
                         <div
                             class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -164,24 +166,21 @@ Add a new property
                         Rent</span>
                     <div class="">
                         <input type="radio" name="type" value="sale" id="sale"
-                            {{ old.type is not defined ? 'checked' : old.type == 'sale' ? 'checked' : '' }}>
+                            {{ property.type == 'sale' ? 'checked' : '' }}>
                         <label for="sale" class="ml-2">Sale</label>
                     </div>
                     <div class="">
                         <input type="radio" name="type" value="rent" id="rent"
-                            {{ old.type == 'rent' ? 'checked' : '' }}>
+                            {{ property.type == 'rent' ? 'checked' : '' }}>
                         <label for="rent" class="ml-2">Rent</label>
                     </div>
-                    {% if errors is defined and errors.type is defined %}
-                    <p class="text-red-500 text-xs italic">{{ errors.type[0] }}</p>
-                    {% endif %}
                 </div>
 
                 <!-- Description -->
                 <div class="p-4 w-full">
                     <span class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Description</span>
                     <textarea name="description" rows="5"
-                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white {{ errors ? errors.description ? 'border-red-400' : '' : '' }}">{{ old.description ?? '' }}</textarea>
+                        class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white {{ errors ? errors.description ? 'border-red-400' : '' : '' }}">{{ property.description ?? '' }}</textarea>
                     {% if errors is defined and errors.description is defined %}
                     <p class="text-red-500 text-xs italic">{{ errors.description[0] }}</p>
                     {% endif %}
@@ -189,19 +188,22 @@ Add a new property
 
                 <!-- Image -->
                 <div class="p-4 w-full">
+
+                    {% if property.image_full %}
+                    <div class="p-2 h-20 w-20 rounded border border-gray-300 bg-center bg-cover bg-no-repeat"
+                        style="background-image: url('{{ property.image_full }}');"></div>
+                    {% endif %}
+
                     <span class="mt-4 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Upload new
                         image?</span>
                     <input type="file" name="image"
-                        class=" w-full focus:outline-none hover:shadow-outline focus:shadow-outline {{ errors ? errors.image ? 'border border-red-400' : '' : '' }}">
-                    {% if errors is defined and errors.description is defined %}
-                    <p class="text-red-500 text-xs italic">{{ errors.image[0] }}</p>
-                    {% endif %}
+                        class=" w-full focus:outline-none hover:shadow-outline focus:shadow-outline">
                 </div>
 
                 <!-- Submit Button -->
                 <div class="p-4 w-full">
-                    <input type="submit" value="Submit Property"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ">
+                    <input type="submit" value="Edit Property"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 </div>
             </div>
         </form>

@@ -78,20 +78,18 @@ Property List
         <div class="w-full sm:w-1/2 pr-3 pb-3">
             <a href="{{ url_for('properties.show', {'id': property.id}) }}">
                 <div class="p-4 h-full bg-white shadow rounded hover:shadow-outline">
-                    <div class="sm:flex ">
+                    <div class="flex ">
                         <!-- Image -->
                         {% if property.image_full %}
-                        <div class="p-2 h-20 w-20 rounded border border-gray-300 bg-center bg-cover bg-no-repeat"
+                        <div class="flex-none p-2 h-20 w-20 rounded border border-gray-300 bg-center bg-cover bg-no-repeat"
                             style="background-image: url('{{ property.image_full }}');"></div>
                         {% endif %}
 
                         <div class="ml-4">
-                            <p class="flex flex-wrap items-center text-xl text-gray-700">
-                                <span class="mr-2">{{ property.town }}</span>
-                                <span class="text-sm text-gray-500">(&pound;{{ property.price }})</span>
+                            <p class="flex flex-wrap items-center text-xl text-gray-700 leading-tight">
+                                <span class="mr-2">{{ property.property_type }} in {{ property.town }} for {{ property.type |title }}</span>
                             </p>
-                            <p class="text-gray-700">{{ property.address }}</p>
-                            <p class="text-sm text-gray-500">For {{ property.type |title }}</p>
+                            <p class="text-sm text-gray-500 leading-loose">&pound;{{ property.price }}</p>
                         </div>
                     </div>
                 </div>

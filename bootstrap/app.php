@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 /**
  * This file builds up the Slim App with the DI Container
  * and allows the user to define configuration, 
@@ -12,10 +12,10 @@ use Slim\Factory\AppFactory;
 // Let's build up a container allowing user to hook into it during build
 $containerBuilder = new ContainerBuilder();
 
-// User config
+// Add user config into container
 $containerBuilder->addDefinitions(__DIR__ . '/../config/app.php');
 
-// User dependencies
+// User's chance to bind into container
 (require __DIR__ . '/../app/dependencies.php')($containerBuilder);
 
 // Set the container to use when building Slim App
@@ -24,13 +24,13 @@ AppFactory::setContainer($containerBuilder->build());
 // Instantiate our Slim app
 $app = AppFactory::create();
 
-// Fire up DB instance (Required for Eloquent to resolve connection)
+// Give DB a kick! (Required for Eloquent to resolve connection)
 $app->getContainer()->get('db');
 
-// Register user middlewares
+// Register middlewares
 (require __DIR__ . '/../app/middleware.php')($app);
 
-// Register user web routes
+// Register web routes
 (require __DIR__ . '/../routes/web.php')($app);
 
 // Return Slim app back to caller

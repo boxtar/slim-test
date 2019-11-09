@@ -32,6 +32,14 @@ return function (App $app) {
         // Show
         $group->get('/{id}', PropertiesController::class . ':show')
             ->setName('properties.show');
+        
+        // Edit
+        $group->get('/{id}/edit', PropertiesController::class . ':edit')
+            ->setName('properties.edit');
+
+        // Update
+        $group->patch('/{id}', PropertiesController::class . ':update')
+            ->setName('properties.update');
 
         // Delete
         $group->delete('/{id}', PropertiesController::class . ':delete')
