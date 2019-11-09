@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Contracts\ConfigInterface;
 use Slim\Views\Twig;
 use App\Models\Property;
 use Valitron\Validator as Validator;
@@ -31,6 +32,13 @@ class PropertiesController
     protected $flash;
 
     /**
+     * Config instance for retrieving settings.
+     * 
+     * @param ConfigInterface $config
+     */
+    protected $config;
+
+    /**
      * Absolute filepath to storage directory.
      * 
      * @param string $storagePath
@@ -49,12 +57,13 @@ class PropertiesController
      * possible as I've added \Slim\Views\Twig::class into
      * container in dependencies.php
      */
-    public function __construct(Twig $view, Messages $flash, $storageConfig)
+    public function __construct(Twig $view, Messages $flash, ConfigInterface $config)
     {
         $this->view = $view;
         $this->flash = $flash;
-        $this->storagePath = $storageConfig['uploads_dir'];
-        $this->storageUrl =  $storageConfig['public_storage'];
+        $this->config = $config;
+        $this->storagePath = $config->get('storage.public_storage_path');
+        $this->storageUrl =  $config->get('storage.public_storage_url');
     }
 
     /**
@@ -70,7 +79,7 @@ class PropertiesController
 
         // Number of items to display per page.
         // Not configurable from UI as I have no time. Feel free to change here.
-        $itemsPerPage = 30;
+        $itemsPerPage = 15;
 
         // Grab all properties and chunk for pagination
         $properties = Property::orderBy('id', 'desc')->get()->toArray();

@@ -1,0 +1,36 @@
+<div class="mt-8 flex justify-center items-center">
+    <!-- First page -->
+    <a href="{{ url_for('properties.index') }}?page={{ first_page }}"
+        class="mr-2 px-1 py-2 text-blue-500 hover:text-blue-700 {{ first_page == current_page ? 'invisible' : '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path opacity=".87" fill="none" d="M24 0v24H0V0h24z" />
+            <path class="fill-current" d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z" />
+            </svg>
+    </a>
+    <!-- Previous page -->
+    <a href="{{ url_for('properties.index') }}?page={{ previous_page }}"
+        class="mr-2 px-1 py-2 text-blue-500 hover:text-blue-700 {{ not previous_page ? 'invisible' : '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="none" d="M0 0h24v24H0V0z" />
+            <path class="fill-current" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" /></svg>
+    </a>
+    <!-- Current page -->
+    <span class="px-4 py-2 text-xs uppercase text-gray-500 rounded-full flex items-center justify-center">
+        {{ current_page }}
+    </span>
+    <!-- Next page -->
+    <a href="{{ url_for('properties.index') }}?page={{ next_page }}"
+        class="ml-2 px-1 py-2 text-blue-500 hover:text-blue-700 {{ not next_page ? 'invisible' : '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="none" d="M0 0h24v24H0V0z" />
+            <path class="fill-current" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z" /></svg>
+    </a>
+    <!-- Last page -->
+    <a href="{{ url_for('properties.index') }}?page={{ last_page }}"
+        class="mr-2 px-1 py-2 text-blue-500 hover:text-blue-700 {{ last_page == current_page ? 'invisible' : '' }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path opacity=".87" fill="none" d="M0 0h24v24H0V0z" />
+            <path class="fill-current" d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z" />
+            </svg>
+    </a>
+</div>

@@ -1,2 +1,7 @@
 *
 !.gitignore
+!first_page.svg
+!last_page.svg
+!next_page.svg
+!previous_page.svg
+!*/
