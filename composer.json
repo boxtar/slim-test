@@ -8,7 +8,8 @@
         "illuminate/database": "~5.1",
         "symfony/var-dumper": "^4.3",
         "vlucas/valitron": "^1.4",
-        "slim/flash": "^0.4.0"
+        "slim/flash": "^0.4.0",
+        "intervention/image": "^2.5"
     },
     "autoload": {
         "psr-4": {

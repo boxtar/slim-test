@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Contracts\ConfigInterface;
 use Slim\Views\Twig;
 use App\Models\Property;
+use Intervention\Image\ImageManager;
 use Valitron\Validator as Validator;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,6 +40,13 @@ class PropertiesController
     protected $config;
 
     /**
+     * Image processor
+     * 
+     * @param ImageManager $image
+     */
+    protected $images;
+
+    /**
      * Absolute filepath to storage directory.
      * 
      * @param string $storagePath
@@ -57,11 +65,12 @@ class PropertiesController
      * possible as I've added \Slim\Views\Twig::class into
      * container in dependencies.php
      */
-    public function __construct(Twig $view, Messages $flash, ConfigInterface $config)
+    public function __construct(Twig $view, Messages $flash, ConfigInterface $config, ImageManager $images)
     {
         $this->view = $view;
         $this->flash = $flash;
         $this->config = $config;
+        $this->images = $images;
         $this->storagePath = $config->get('storage.public_storage_path');
         $this->storageUrl =  $config->get('storage.public_storage_url');
     }
@@ -148,7 +157,8 @@ class PropertiesController
         // Persist
         $property = Property::create(
             array_merge($input, [
-                'image_full' => $this->getFileUrl($this->processImage($request))
+                'image_full' => $imgName = $this->getUrlTo($this->processImage($request)),
+                'image_thumbnail' => $this->getUrlTo($this->getThumbNameFor($imgName))
             ])
         );
 
@@ -168,16 +178,18 @@ class PropertiesController
         return $this->view->render($response, 'properties/edit.twig', compact('property', 'errors'));
     }
 
+    /**
+     * Update the resource
+     * TODO: This method has become way too heavy. Refactor immediately.
+     */
     public function update(Request $request, Response $response, $args)
     {
+        // Get the property that is being updated
         $property = Property::findOrThrow($request, $args['id']);
-
         // Validation
         $v = new Validator($input = $request->getParsedBody());
-
         // Add Validation Rules
         $this->addValidationRules($v);
-
         // Return validation errors, if any
         if (!$v->validate()) {
             $this->flash->addMessage('errors', $v->errors());
@@ -188,21 +200,29 @@ class PropertiesController
             );
         }
 
-        // dd($input);
-
-        // Update
-        // processImage will return an empty string if no file in request payload
+        // Update image - processImage will return an empty string if no file in request payload
         if ($imageName = $this->processImage($request)) {
+            // The processImage method also saves a thumbnail - Grab its name.
+            $thumbName = $this->getUrlTo(
+                $this->getThumbNameFor($imageName)
+            );
             // Convert absolute disk location to absolute URL
-            $imageName = $this->getFileUrl(basename($imageName));
-            // Delete old image (or try, at least)
-            $oldImagePath = $this->getFileStoragePath(basename($property->image_full));
+            $imageName = $this->getUrlTo(basename($imageName));
+            // Delete old image and thumbnail (or try, at least)
+            $oldImagePath = $this->getPathTo(basename($property->image_full));
             if (file_exists($oldImagePath)) unlink($oldImagePath);
+            $oldThumbPath = $this->getPathTo(basename($property->image_thumbnail));
+            if (file_exists($oldThumbPath)) unlink($oldThumbPath);
         }
-        // If no new image was uploaded, set imageName to current image url
+        // If no new image was uploaded $imageName will be falsy, use current
         $imageName = $imageName ?: $property->image_full;
-
-        $property->update(array_merge($input, ['image_full' => $imageName]));
+        // If no new image was uploaded, then $thumbName won't exist so use current
+        $thumbName = $thumbName ?? $property->image_thumbnail;
+        // Perform the update
+        $property->update(array_merge($input, [
+            'image_full' => $imageName,
+            'image_thumbnail' => $thumbName
+        ]));
 
         // Respond
         return $response
@@ -214,17 +234,17 @@ class PropertiesController
 
     public function delete(Request $request, Response $response, $args)
     {
-        // Authorise
-
         // Delete
         $property = Property::findOrFail($args['id']);
         $property->delete();
 
         // Get file location on disk of image
-        $imagePath = $this->getFileStoragePath(basename($property->image_full));
+        $imagePath = $this->getPathTo(basename($property->image_full));
+        $thumbPath = $this->getPathTo(basename($property->image_thumbnail));
 
         // Delete image (or try, at least)
         if (file_exists($imagePath)) unlink($imagePath);
+        if (file_exists($thumbPath)) unlink($thumbPath);
 
         // Redirect with message (TODO: flash success message)
         return $response
@@ -254,28 +274,6 @@ class PropertiesController
     }
 
     /**
-     * Returns the absolute filepath to a file identified by the given filename.
-     * 
-     * @param string    $filename Name and extension of required file
-     * @return string   Absolute path to the required file
-     */
-    protected function getFileStoragePath($filename)
-    {
-        return $this->storagePath . DIRECTORY_SEPARATOR . $filename;
-    }
-
-    /**
-     * Returns the absolute URL to a file identified by the given filename.
-     * 
-     * @param string    $filename Name and extension of required file
-     * @return string   Absolute URL to the required file
-     */
-    protected function getFileUrl($filename)
-    {
-        return $this->storageUrl . DIRECTORY_SEPARATOR . $filename;
-    }
-
-    /**
      * Takes a single image from the request, moves it to
      * storage and returns the randomly generated filename.
      * 
@@ -289,10 +287,12 @@ class PropertiesController
         if (isset($files['image'])) {
             $image = $files['image'];
             if ($image->getError() === UPLOAD_ERR_OK) {
+                // Move full resolution image
                 $imageName = $this->moveUploadedFile($this->storagePath, $image);
+                // Create and save thumbnail image
+                $this->createThumbnail($imageName);
             }
         }
-
         return $imageName;
     }
 
@@ -313,5 +313,59 @@ class PropertiesController
         $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
 
         return $filename;
+    }
+
+    /**
+     * Creates and saves a thumbnail image in the same location as
+     * the given file.
+     *
+     * @param string $imageName name of the image to be used to create the thumbnail
+     * @return string filename of new thumbnail image
+     */
+    protected function createThumbnail($imageName)
+    {
+        $thumbnailName = $this->getThumbNameFor($imageName);
+
+        $this->images
+            ->make($this->getPathTo($imageName))
+            ->resize(150, 150)
+            ->save($this->getPathTo($thumbnailName));
+
+        return $thumbnailName;
+    }
+
+    /**
+     * Returns the absolute filepath to a file identified by the given filename.
+     * 
+     * @param string    $filename Name and extension of required file
+     * @return string   Absolute path to the required file
+     */
+    protected function getPathTo($filename)
+    {
+        return $this->storagePath . DIRECTORY_SEPARATOR . $filename;
+    }
+
+    /**
+     * Returns the absolute URL to a file identified by the given filename.
+     * 
+     * @param string    $filename Name and extension of required file
+     * @return string   Absolute URL to the required file
+     */
+    protected function getUrlTo($filename)
+    {
+        return $this->storageUrl . DIRECTORY_SEPARATOR . $filename;
+    }
+
+    /**
+     * Returns thumbnail name based on passed in filename. Simply shoves
+     * '_thumb' in the middle of it.
+     * 
+     * @param string    $filename Name and extension of original image
+     * @return string   Generated thumbnail name
+     */
+    protected function getThumbNameFor($imageName)
+    {
+        $imageNameParts = pathinfo($imageName);
+        return $imageNameParts['filename'] . '_thumb.' . $imageNameParts['extension'];
     }
 }
