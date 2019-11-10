@@ -189,13 +189,13 @@ Add a new property
 
                 <!-- Image -->
                 <div class="p-4 w-full">
-                    <span class="mt-4 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Upload new
-                        image?</span>
-                    <input type="file" name="image"
-                        class=" w-full focus:outline-none hover:shadow-outline focus:shadow-outline {{ errors ? errors.image ? 'border border-red-400' : '' : '' }}">
+                    <span class="mt-4 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Property Image</span>
+                    <input type="file" name="image" id="fileInput"
+                        class=" w-full p-2 border-2 focus:outline-none hover:border-gray-500 focus:border-gray-500 {{ errors ? errors.image ? 'border border-red-400' : '' : '' }}">
                     {% if errors is defined and errors.description is defined %}
                     <p class="text-red-500 text-xs italic">{{ errors.image[0] }}</p>
                     {% endif %}
+                    <p id="file-too-large" class="mt-2 text-red-500 text-xs italic hidden"></p>
                 </div>
 
                 <!-- Submit Button -->
@@ -208,3 +208,7 @@ Add a new property
     </div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+    {% include "properties/_minimalFileValidation.twig" %}
+{% endblock scripts %}

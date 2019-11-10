@@ -1,0 +1,41 @@
+<script>
+    // Absolute bare minimum JS file validation.
+    // Should NOT rely on this. Always do server-side validation!
+    class FileValidator {
+        constructor(input, message) {
+            this.input = input;
+            this.message = message;
+            this.input.onchange = this.validate.bind(this);
+        }
+
+        validate() {
+            const file = this.input.files[0];
+            const size = Math.floor(file.size / 1024 / 1024);
+            if (size > 1) {
+                this.handleError(file);
+            } else {
+                this.clearErrors();
+            }
+        }
+
+        handleError(file) {
+            const message = `File ${file.name} exceeds the maximum size of 1 Megabyte`;
+            this.message.innerText = message;
+            this.message.classList.remove('hidden');
+            this.input.value = null;
+            this.input.classList.add('border-red-500');
+        }
+
+        clearErrors() {
+            this.message.classList.add('hidden');
+            this.message.innerText = "";
+            this.input.classList.remove('border-red-500');
+        }
+    }
+
+    const validator = new FileValidator(
+        document.getElementById("fileInput"),
+        document.getElementById("file-too-large")
+    );
+
+</script>

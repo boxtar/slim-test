@@ -46,7 +46,7 @@ Property Listing
                                 <span class="mr-2">{{ property.property_type }} in {{ property.town }} for
                                     {{ property.type |title }}</span>
                             </p>
-                            <p class="text-sm text-gray-500 leading-loose">&pound;{{ property.price }}</p>
+                            <p class="text-sm text-gray-500 leading-loose">&pound;{{ property.price|number_format }}</p>
                         </div>
                     </div>
                 </div>

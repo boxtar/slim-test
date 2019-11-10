@@ -142,13 +142,15 @@ Edit mode, engaged!
                     <div class="relative">
                         <select name="property_type"
                             class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                            <option {{ property.property_type == 'End of Terrace' ? 'selected' : '' }}>End of Terrace</option>
+                            <option {{ property.property_type == 'End of Terrace' ? 'selected' : '' }}>End of Terrace
+                            </option>
                             <option {{ property.property_type == 'Flat' ? 'selected' : '' }}>Flat
                             </option>
                             <option {{ property.property_type == 'Terraced' ? 'selected' : '' }}>Terraced</option>
                             <option {{ property.property_type == 'Bungalow' ? 'selected' : '' }}>Bungalow</option>
                             <option {{ property.property_type == 'Cottage' ? 'selected' : '' }}>Cottage</option>
-                            <option {{ property.property_type == 'Semi-detached' ? 'selected' : '' }}>Semi-detached</option>
+                            <option {{ property.property_type == 'Semi-detached' ? 'selected' : '' }}>Semi-detached
+                            </option>
                             <option {{ property.property_type == 'Detatched' ? 'selected' : '' }}>Detatched</option>
                         </select>
                         <div
@@ -196,8 +198,12 @@ Edit mode, engaged!
 
                     <span class="mt-4 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Upload new
                         image?</span>
-                    <input type="file" name="image"
-                        class=" w-full focus:outline-none hover:shadow-outline focus:shadow-outline">
+                    <input type="file" name="image" id="fileInput"
+                        class=" w-full p-2 border-2 focus:outline-none hover:border-gray-500 focus:border-gray-500 {{ errors ? errors.image ? 'border border-red-400' : '' : '' }}">
+                    {% if errors is defined and errors.description is defined %}
+                    <p class="text-red-500 text-xs italic">{{ errors.image[0] }}</p>
+                    {% endif %}
+                    <p id="file-too-large" class="mt-2 text-red-500 text-xs italic hidden"></p>
                 </div>
 
                 <!-- Submit Button -->
@@ -210,3 +216,7 @@ Edit mode, engaged!
     </div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+{% include "properties/_minimalFileValidation.twig" %}
+{% endblock scripts %}

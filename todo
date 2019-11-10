@@ -1,13 +1,15 @@
 File handling best practices:
 https://www.reddit.com/r/PHP/comments/2dn8t3/file_uploading_best_practices_and_handling_in_php/
 
-Protect against files that are too small (DDOS) and too large.
+Protect against files that are too small (DDOS) and too large on server.
 
 Whitelist MIME types
 
 Implement frontend in Vue.js or React.js and make backend an API.
 
 Make a server side script for fetching/updating from the external API and set it up as a cron job.
+
+DRY up create and edit twig template files. This won't be applicable if switching over to an API.
 
 The PropertiesController needs some major refactoring. Might even be worthwhile moving to a structure like the below. The issue with this is losing the ability to have reusable methods (like processImage), but that should lead to better practice by moving them to a reusable class instead.
 

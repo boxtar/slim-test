@@ -20,7 +20,7 @@
                     <span class="text-sm text-gray-500">(For {{ property.type |title }})</span>
                 </p>
                 <p class="text-gray-700">{{ property.address }}</p>
-                <p class="text-sm text-gray-500 tracking-wide uppercase">&pound;{{ property.price }}</p>
+                <p class="text-sm text-gray-500 tracking-wide uppercase">&pound;{{ property.price|number_format }}</p>
             </div>
         </div>
 
