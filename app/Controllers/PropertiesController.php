@@ -111,7 +111,8 @@ class PropertiesController
             'next_page' => $page < $noOfPages ? $page + 1 : null,
             'first_page' => 1,
             'last_page' => $noOfPages,
-            'items_per_page' => $itemsPerPage
+            'items_per_page' => $itemsPerPage,
+            'notifications' => $this->flash->getMessage('notifications')
         ]);
     }
 

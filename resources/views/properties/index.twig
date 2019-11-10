@@ -7,6 +7,14 @@ Property Listing
 {% block content %}
 
 <div class="container px-2 mx-auto">
+
+    {% if notifications is iterable %}
+    <div class="mt-8 px-4 py-8 bg-green-200 text-green-600 text-center rounded-lg border-2 border-green-300">
+        {{ notifications[0] }}
+    </div>
+    {% endif %}
+
+
     {# Pagination #}
     {% include "properties/_pagination.twig" %}
 
@@ -60,6 +68,13 @@ Property Listing
     <div class="mb-8">
         {% include "properties/_pagination.twig" %}
     </div>
+
+    <div id="overlay"
+        class="hidden fixed flex h-screen items-center justify-center left-0 text-white text-xl top-0 w-screen"
+        style="background: rgba(45,54,72,0.85);">
+        <p>Please wait while we update the database...</p>
+    </div>
+
 </div>
 {% endblock content %}
 
@@ -69,6 +84,8 @@ Property Listing
         e.preventDefault();
         if (confirm("Are you sure? This may take a minute...")) {
             location = e.target.getAttribute('href');
+            document.getElementById('overlay').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
         }
     }
 </script>

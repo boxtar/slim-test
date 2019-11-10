@@ -7,6 +7,7 @@ use App\Controllers\PropertiesController;
 use App\Models\Property;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Flash\Messages;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
 return function (App $app) {
@@ -32,7 +33,7 @@ return function (App $app) {
         // Show
         $group->get('/{id}', PropertiesController::class . ':show')
             ->setName('properties.show');
-        
+
         // Edit
         $group->get('/{id}/edit', PropertiesController::class . ':edit')
             ->setName('properties.edit');
@@ -52,8 +53,19 @@ return function (App $app) {
     // TODO: Look into asyc Guzzle requests
     $app->get('/get-data', function (Request $request, Response $response) {
 
-        // This will hold all the property data from API
-        $apiData = [];
+        // Uncomment below when testing so api isn't hammered:
+
+        // // Flash message to session
+        // (new Messages())->addMessage('notifications', 'Properties updated.');
+
+        // return $response
+        //     ->withHeader(
+        //         'Location',
+        //         $request->getAttribute('routeParser')->urlFor('properties.index')
+        //     );
+
+        // API key
+        $apiKey = '3NLTTNlXsi6rBWl7nYGluOdkl2htFHug';
 
         // Page being requested
         $currentPage = 1;
@@ -64,8 +76,8 @@ return function (App $app) {
         // Next URL for data from API
         $nextUrl = "http://trialapi.craig.mtcdevserver.com/api/properties";
 
-        // API key
-        $apiKey = '3NLTTNlXsi6rBWl7nYGluOdkl2htFHug';
+        // After the below while loop runs this array will hold all the property data from API
+        $apiData = [];
 
         // Setup Guzzle client
         $client = new GuzzleHttp\Client();
@@ -116,7 +128,13 @@ return function (App $app) {
             }
         }
 
-        // This is just lazy. I should be redirecting somewhere with a flashed message.
-        return $this->get('view')->render($response, 'properties/refreshed.twig');
+        // Flash message to session
+        (new Messages())->addMessage('notifications', 'Properties updated.');
+
+        return $response
+            ->withHeader(
+                'Location',
+                $request->getAttribute('routeParser')->urlFor('properties.index')
+            );
     })->setName('properties.refresh-from-api');
 };
