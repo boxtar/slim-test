@@ -68,11 +68,15 @@ class ApiController
             );
     }
 
+    /**
+     * Initiate all requests, but do not block.
+     */
     protected function getDataFromApi()
     {
         // This array will hold all the promises for the async requests.
         $promises = [];
-        for ($i = 1; $i <= $this->getNumberOfRequestsRequired(); $i++) {
+        $requests = $this->getNumberOfRequestsRequired();
+        for ($i = 1; $i <= $requests; $i++) {
             $promises[] = $this->client->getAsync($this->uri, [
                 'query' => [
                     'api_key' => $this->key,
@@ -113,8 +117,8 @@ class ApiController
      */
     protected function transformApiData($data)
     {
-        $transformedData = [];
         // Do some transforming to each property and add to our collection
+        $transformedData = [];
         foreach ($data as $result) {
             $data = json_decode($result['value']->getBody()->getContents(), true)['data'];
             foreach ($data as $property) {
