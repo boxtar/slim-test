@@ -139,6 +139,7 @@ class PropertiesController
 
     /**
      * Persist a Property
+     * TODO: Look into firstOrNew
      */
     public function store(Request $request, Response $response)
     {
@@ -187,10 +188,13 @@ class PropertiesController
     {
         // Get the property that is being updated
         $property = Property::findOrThrow($request, $args['id']);
+        
         // Validation
         $v = new Validator($input = $request->getParsedBody());
+
         // Add Validation Rules
         $this->addValidationRules($v);
+
         // Return validation errors, if any
         if (!$v->validate()) {
             $this->flash->addMessage('errors', $v->errors());
@@ -219,6 +223,7 @@ class PropertiesController
         $imageName = $imageName ?: $property->image_full;
         // If no new image was uploaded, then $thumbName won't exist so use current
         $thumbName = $thumbName ?? $property->image_thumbnail;
+
         // Perform the update
         $property->update(array_merge($input, [
             'image_full' => $imageName,

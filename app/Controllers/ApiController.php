@@ -2,11 +2,12 @@
 
 namespace App\Controllers;
 
-use App\Models\Property;
+use App\Contracts\ConfigInterface;
 use GuzzleHttp\Client;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use App\Models\Property;
 use Slim\Flash\Messages;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
 
 use function GuzzleHttp\Promise\settle;
 
@@ -16,18 +17,20 @@ class ApiController
     protected $client;
 
     // API endpoint
-    protected $uri = "http://trialapi.craig.mtcdevserver.com/api/properties";
+    protected $uri;
 
     // API key
-    protected $key = '3NLTTNlXsi6rBWl7nYGluOdkl2htFHug';
+    protected $key;
 
     // Number of property resources per page (100 is max)
     protected $pageSize = 100;
 
     // Constructore
-    public function __construct(Client $client)
+    public function __construct(Client $client, ConfigInterface $config)
     {
         $this->client = $client;
+        $this->uri = $config->get('api.uri');
+        $this->key = $config->get('api.key');
     }
 
     /**
@@ -41,6 +44,17 @@ class ApiController
      */
     public function index(RequestInterface $request, ResponseInterface $response)
     {
+        // In order to delete any properties in our database that are no longer
+        // in the dataset returned from the API we will simply get all api
+        // record IDs in our DB and start removing those that do exist
+        // in the API. Then we're left with the API IDs to remove.
+        $apiIdsToBeRemovedFromDatabase = [];
+
+        foreach (Property::where('api_id', '<>', '')->cursor() as $property) {
+            $apiId = $property['api_id'];
+            $apiIdsToBeRemovedFromDatabase[$apiId] = $apiId;
+        }
+
         // This will hold the transformed API data for storing in DB
         $transformedData = $this->transformApiData($this->getDataFromApi());
 
@@ -48,13 +62,18 @@ class ApiController
         // This needs to be optimised.
         foreach ($transformedData as $apiProperty) {
             // Is this API property already in our own Datastore?
-            if ($property = Property::where('api_id', $apiProperty['uuid'])->get()->first()) {
-                // If yes, just update it.
-                $property->update($apiProperty);
-            } else {
-                // Else persist it in our Datastore.
-                Property::create($apiProperty);
-            }
+            Property::updateOrCreate(
+                ['api_id' => $apiProperty['uuid']],
+                $apiProperty
+            );
+
+            // Remove from list of API IDs to be removed from Database
+            unset($apiIdsToBeRemovedFromDatabase[$apiProperty['uuid']]);
+        }
+
+        // If there are any API ids in our DB that aren't in the API anymore, delete them.
+        if (count($apiIdsToBeRemovedFromDatabase)) {
+            Property::where('api_id', $apiIdsToBeRemovedFromDatabase)->delete();
         }
 
         // Flash message to session

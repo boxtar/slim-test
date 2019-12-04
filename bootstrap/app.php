@@ -1,10 +1,12 @@
 <?php
-session_start();
+
 /**
  * This file builds up the Slim App with the DI Container
  * and allows the user to define configuration, 
  * dependencies, middlewares and routes.
  */
+
+session_start();
 
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;

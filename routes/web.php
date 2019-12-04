@@ -2,16 +2,9 @@
 
 use App\Controllers\ApiController;
 use Slim\App;
-use App\Models\Property;
-use Slim\Flash\Messages;
 use App\Controllers\HomeController;
 use App\Controllers\PropertiesController;
-use GuzzleHttp\Promise\Promise;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
-
-use function GuzzleHttp\Promise\settle;
 
 return function (App $app) {
 
